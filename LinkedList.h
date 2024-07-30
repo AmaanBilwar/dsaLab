@@ -2,9 +2,8 @@
 #define LINKEDLIST_H
 
 #include <iostream>
-#include <stdexcept> // For exceptions
+#include <stdexcept>
 
-// Node is a template class representing each element in the linked list
 template<class T>
 class Node {
 public:
@@ -13,13 +12,32 @@ public:
 
     Node(T val) : data(val), next(nullptr) {}
 };
+template <typename T>
+class LinkedList {
+public:
 
+    void DisplayList() const {
+        Node* current = head;
+        while (current != nullptr) {
+            std::cout << current->data << std::endl;
+            current = current->next;
+        }
+    }
+
+private:
+    struct Node {
+        T data;
+        Node* next;
+    };
+
+    Node* head;
+};
 // LinkedList is a template class representing the linked list
 template<class T>
 class LinkedList {
 private:
     Node<T>* head;
-    Node<T>* current; // For SeeNext method
+    Node<T>* current; // SeeNext 
     int size;
 
 public:
@@ -37,28 +55,39 @@ public:
     // Debug method to print the list
     void PrintList() const;
 
-    // New methods to be added
-    T* GetItem(const T& item);          // Get and remove an item if it exists
-    bool IsInlist(const T& item) const; // Check if an item is in the list
-    bool IsEmpty() const;               // Check if the list is empty
-    int Size() const;                   // Get number of items in the list
-    T* SeeNext();                       // See the next item in the list
-    T* SeeAt(int location);             // See an item at a specific location
-    void Reset();                       // Reset the location for SeeNext
-    ~LinkedList();                      // Destructor
+    T* GetItem(const T& item);      
+    bool IsInlist(const T& item) const; 
+    bool IsEmpty() const;         
+    int Size() const;             
+    T* SeeNext();               
+    T* SeeAt(int location);             
+    void Reset();                       
+    ~LinkedList();        
+
+    void displayList() const {
+        Node<T>* temp = head;
+        while (temp != nullptr) {
+            temp->data.display(); // Call the display method of the item
+            temp = temp->next;
+        }
+    }              
+
 };
 
 template<class T>
 void LinkedList<T>::AddItem(const T& item) {
     Node<T>* newNode = new Node<T>(item);
-
-    if (head == nullptr) {
+    
+    // Insert in sorted order
+    if (head == nullptr || head->data > item) {
+        newNode->next = head;
         head = newNode;
     } else {
         Node<T>* temp = head;
-        while (temp->next != nullptr) {
+        while (temp->next != nullptr && temp->next->data < item) {
             temp = temp->next;
         }
+        newNode->next = temp->next;
         temp->next = newNode;
     }
     size++;
@@ -79,8 +108,6 @@ bool LinkedList<T>::operator>(const LinkedList<T>& other) const {
         thisCurr = thisCurr->next;
         otherCurr = otherCurr->next;
     }
-
-    // If this list is longer than the other list
     return (thisCurr != nullptr && otherCurr == nullptr);
 }
 
@@ -99,8 +126,6 @@ bool LinkedList<T>::operator<(const LinkedList<T>& other) const {
         thisCurr = thisCurr->next;
         otherCurr = otherCurr->next;
     }
-
-    // If this list is shorter than the other list
     return (thisCurr == nullptr && otherCurr != nullptr);
 }
 
@@ -117,8 +142,6 @@ bool LinkedList<T>::operator==(const LinkedList<T>& other) const {
         thisCurr = thisCurr->next;
         otherCurr = otherCurr->next;
     }
-
-    // Both lists should reach their end at the same time
     return (thisCurr == nullptr && otherCurr == nullptr);
 }
 
@@ -142,11 +165,9 @@ T* LinkedList<T>::GetItem(const T& item) {
     while (current != nullptr) {
         if (current->data == item) {
             if (previous == nullptr) {
-                // Item is in the head node
-                head = current->next;
+                head = current->next; // Item is in the head node
             } else {
-                // Item is in a non-head node
-                previous->next = current->next;
+                previous->next = current->next; // Item is in a non-head node
             }
             T* foundItem = new T(current->data);
             delete current;
@@ -156,9 +177,7 @@ T* LinkedList<T>::GetItem(const T& item) {
         previous = current;
         current = current->next;
     }
-
-    // Item not found
-    return nullptr;
+    return nullptr; // Item not found
 }
 
 // Implementation of IsInlist method
@@ -195,8 +214,7 @@ T* LinkedList<T>::SeeNext() {
 
     if (current == nullptr) {
         current = head;
-    } 
-    else {
+    } else {
         current = current->next;
     }
 
@@ -218,7 +236,7 @@ T* LinkedList<T>::SeeAt(int location) {
     for (int i = 0; i < location; ++i) {
         temp = temp->next;
     }
-    current = temp->next;
+    current = temp->next; // Set the current pointer to the next item
 
     return &(temp->data);
 }
@@ -229,10 +247,9 @@ void LinkedList<T>::Reset() {
     current = nullptr;
 }
 
-//Destructor
+// Destructor implementation
 template<class T>
-LinkedList<T>::~
-LinkedList() {
+LinkedList<T>::~LinkedList() { // Fixed destructor syntax
     Node<T>* temp;
     while (head != nullptr) {
         temp = head;
@@ -240,4 +257,6 @@ LinkedList() {
         delete temp;
     }
 }
+
+
 #endif

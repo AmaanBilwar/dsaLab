@@ -1,6 +1,5 @@
 #include "Student.h"
-#include <ctime> //get cuurent time 
-
+#include <ctime>
 
 // Constructor implementation
 Student::Student(std::string fName, std::string lName, std::string mNo, std::tm birth, double g)
@@ -27,7 +26,7 @@ int Student::GetAge() const {
 
     int age = currentYear - (birthday.tm_year + 1900);
 
-    // Adjust age if the birthday has not occurred yet still for teh current year 
+    // Adjust age if the birthday has not occurred yet for the current year 
     if (currentMonth < (birthday.tm_mon + 1) ||
         (currentMonth == (birthday.tm_mon + 1) && currentDay < birthday.tm_mday)) {
         age--;
@@ -35,6 +34,7 @@ int Student::GetAge() const {
 
     return age;
 }
+
 // Operator > overload
 bool Student::operator>(const Student& other) const {
     return mNumber > other.mNumber;
@@ -50,9 +50,14 @@ bool Student::operator==(const Student& other) const {
     return mNumber == other.mNumber;
 }
 
+// Implementation of Display method (Task 4)
+void Student::Display() const { // Task 4
+    std::cout << "Name: " << GetName() << ", MNumber: " << mNumber << ", GPA: " << gpa << ", Age: " << GetAge() << std::endl;
+}
+
 // Implementation of << operator overload
 std::ostream& operator<<(std::ostream& os, const Student& student) {
-    os << student.GetName() << ", MNumber: " << student.GetMNumber()
+    os << "Name: " << student.GetName() << ", MNumber: " << student.GetMNumber()
        << ", GPA: " << student.gpa << ", Age: " << student.GetAge();
     return os;
 }
