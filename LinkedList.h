@@ -218,7 +218,9 @@ T* LinkedList<T>::SeeAt(int location) {
     for (int i = 0; i < location; ++i) {
         temp = temp->next;
     }
-    current = temp->next;
+
+    // Update current to point to the node at the specified location
+    current = temp;
 
     return &(temp->data);
 }
