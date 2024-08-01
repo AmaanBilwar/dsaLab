@@ -1,8 +1,7 @@
 #include "LinkedList.h"
 #include "Student.h"
 #include <iostream>
-#include <ctime> 
-
+#include <ctime>
 
 // Helper function to create a std::tm struct for birthdays
 std::tm CreateBirthday(int year, int month, int day) {
@@ -13,157 +12,129 @@ std::tm CreateBirthday(int year, int month, int day) {
     return birthday;
 }
 
+void PrintMenu() {
+    std::cout << "Linked List Test Program" << std::endl;
+    std::cout << "------------------------" << std::endl;
+    std::cout << "1. Add Item" << std::endl;
+    std::cout << "2. Get Item" << std::endl;
+    std::cout << "3. Is In List" << std::endl;
+    std::cout << "4. Is Empty" << std::endl;
+    std::cout << "5. Size" << std::endl;
+    std::cout << "6. See Next" << std::endl;
+    std::cout << "7. See At" << std::endl;
+    std::cout << "8. Reset" << std::endl;
+    std::cout << "9. Print List" << std::endl;
+    std::cout << "10. Exit" << std::endl;
+}
+
 int main() {
-
-
-    // Create some Student objects
-    std::tm birth1 = CreateBirthday(2000, 5, 15);
-    Student student1("John", "Doe", "M00012345", birth1, 3.5);
-
-    std::tm birth2 = CreateBirthday(1999, 8, 20);
-    Student student2("Jane", "Smith", "M00012346", birth2, 3.8);
-    std::tm birth3 = CreateBirthday(2001, 12, 30);
-    Student student3("Alice", "Brown", "M00012347", birth3);
-
-    
-    //Print student details
-    std::cout << "Student 1: " << student1.GetName() << ", MNumber: " << student1.GetMNumber() << ", Age: " 
-              << student1.GetAge() << std::endl;
-    std::cout << "Student 2: " << student2.GetName() << ", MNumber: " << student2.GetMNumber() << ", Age: " 
-              << student2.GetAge() << std::endl;
-    std::cout << "Student 3: " << student3.GetName() << ", MNumber: " << student3.GetMNumber() << ", Age: " 
-              << student3.GetAge() << std::endl;
-
-    // Create a LinkedList of Students
     LinkedList<Student> studentList;
-    studentList.AddItem(student1);
-    studentList.AddItem(student2);
-    studentList.AddItem(student3);
 
-    // Print the list
-    studentList.PrintList(); // Should print the details of the students
+    while (true) {
+        PrintMenu();
+        int choice;
+        std::cout << "Enter your choice: ";
+        std::cin >> choice;
 
-    // Test operator overloads
-    if (student1 > student2) {
-        std::cout << "Student 1 has a greater MNumber than Student 2" << std::endl;
-    } else if (student1 < student2) {
-        std::cout << "Student 1 has a lesser MNumber than Student 2" << std::endl; // Should print this
-    } else if (student1 == student2) {
-        std::cout << "Student 1 and Student 2 have the same MNumber" << std::endl;
-    }
+        switch (choice) {
+            case 1: {
+                std::string firstName, lastName, mNumber;
+                int year, month, day;
+                double gpa;
 
-    // Test LinkedList methods
-    Student* pStudent = studentList.GetItem(student2);
-    if (pStudent != nullptr) {
-        std::cout << "Got student: " << *pStudent << std::endl;
-        delete pStudent;
-    }
+                std::cout << "Enter first name: ";
+                std::cin >> firstName;
+                std::cout << "Enter last name: ";
+                std::cin >> lastName;
+                std::cout << "Enter MNumber: ";
+                std::cin >> mNumber;
+                std::cout << "Enter birthday (year month day): ";
+                std::cin >> year >> month >> day;
+                std::cout << "Enter GPA (optional): ";
+                std::cin >> gpa;
 
-    studentList.PrintList(); // Should print the details of the remaining students
+                std::tm birthday = CreateBirthday(year, month, day);
+                Student student(firstName, lastName, mNumber, birthday, gpa);
+                studentList.AddItem(student);
+                break;
+            }
+            case 2: {
+                std::string mNumber;
+                std::cout << "Enter MNumber to get: ";
+                std::cin >> mNumber;
 
+                Student* student = studentList.GetItem(Student("", "", mNumber, CreateBirthday(0, 0, 0)));
+                if (student != nullptr) {
+                    std::cout << "Got student: " << *student << std::endl;
+                    delete student;
+                } else {
+                    std::cout << "Student not found" << std::endl;
+                }
+                break;
+            }
+            case 3: {
+                std::string mNumber;
+                std::cout << "Enter MNumber to check: ";
+                std::cin >> mNumber;
 
+                if (studentList.IsInlist(Student("", "", mNumber, CreateBirthday(0, 0, 0)))) {
+                    std::cout << "Student is in the list" << std::endl;
+                } else {
+                    std::cout << "Student is not in the list" << std::endl;
+                }
+                break;
+            }
+            case 4: {
+                if (studentList.IsEmpty()) {
+                    std::cout << "List is empty" << std::endl;
+                } else {
+                    std::cout << "List is not empty" << std::endl;
+                }
+                break;
+            }
+            case 5: {
+                std::cout << "Size of list: " << studentList.Size() << std::endl;
+                break;
+            }
+            case 6: {
+                Student* student = studentList.SeeNext();
+                if (student != nullptr) {
+                    std::cout << "Next student: " << *student << std::endl;
+                } else {
+                    std::cout << "No more students" << std::endl;
+                }
+                break;
+            }
+            case 7: {
+                int location;
+                std::cout << "Enter location to see: ";
+                std::cin >> location;
 
-
-    LinkedList<int> list1;
-    list1.AddItem(1);
-    list1.AddItem(3);
-    list1.AddItem(5);
-
-    list1.PrintList(); // Should print: 1 -> 3 -> 5 -> nullptr
-
-    LinkedList<int> list2;
-    list2.AddItem(2);
-    list2.AddItem(4);
-
-    list2.PrintList(); // Should print: 2 -> 4 -> nullptr
-
-    // Testing operator overloads
-    if (list1 > list2) {
-        std::cout << "list1 is greater than list2" << std::endl;
-    } else if (list1 < list2) {
-        std::cout << "list1 is less than list2" << std::endl; // Should print this
-    } else if (list1 == list2) {
-        std::cout << "list1 is equal to list2" << std::endl;
-    }
-
-
-// Create another list with the same values as list1
-    LinkedList<int> list3;
-    list3.AddItem(1);
-    list3.AddItem(3);
-    list3.AddItem(5);
-
-    if (list1 == list3) {
-        std::cout << "list1 is equal to list3" << std::endl; // Should print this
-    }
-
-// Test GetItem
-    int* item = list1.GetItem(3);
-    if (item != nullptr) {
-        std::cout << "Got item: " << *item << std::endl; // Should print: Got item: 3
-        delete item;
-    } else {
-        std::cout << "Item not found" << std::endl;
-    }
-    list1.PrintList(); // Should print: 1 -> 5 -> nullptr
-     
-     
-     
-     // Test IsInlist
-    if (list1.IsInlist(5)) {
-        std::cout << "5 is in the list" << std::endl;
-    } else {
-        std::cout << "5 is not in the list" << std::endl;
-    }
-
-    // Test IsEmpty
-    if (list1.IsEmpty()) {
-        std::cout << "list1 is empty" << std::endl;
-    } else {
-        std::cout << "list1 is not empty" << std::endl; // Should print this
-    }
-
-    // Test Size
-    std::cout << "Size of list1: " << list1.Size() << std::endl; // Should print: Size of list1: 2
-
-     // Test SeeNext
-    list1.Reset(); // Reset position to head
-    int* nextItem = list1.SeeNext();
-    if (nextItem != nullptr) {
-        std::cout << "Next item: " << *nextItem << std::endl; // Should print: Next item: 1
-    }
-    nextItem = list1.SeeNext();
-    if (nextItem != nullptr) {
-        std::cout << "Next item: " << *nextItem << std::endl; // Should print: Next item: 5
-    }
-    nextItem = list1.SeeNext();
-    if (nextItem == nullptr) {
-        std::cout << "No more items" << std::endl; // Should print: No more items
-    }
-    // Test SeeAt
-    list1.AddItem(7);
-    try {
-        int* seeAtItem = list1.SeeAt(1);
-        std::cout << "Item at position 1: " << *seeAtItem << std::endl; // Should print: Item at position 1: 5
-    } catch (const std::out_of_range& e) {
-        std::cout << e.what() << std::endl;
-    }
-
-    try {
-        int* seeAtItem = list1.SeeAt(3); // Attempt to access out-of-range index
-        std::cout << "Item at position 3: " << *seeAtItem << std::endl;
-    } catch (const std::out_of_range& e) {
-        std::cout << e.what() << std::endl; // Should print: Location is out of range
-    }
-        // Remove all elements to test IsEmpty
-    list1.GetItem(1);
-    list1.GetItem(5);
-    list1.GetItem(7);
-
-    if (list1.IsEmpty()) {
-        std::cout << "list1 is empty" << std::endl; // Should print this now
-    } else {
-        std::cout << "list1 is not empty" << std::endl;
+                try {
+                    Student* student = studentList.SeeAt(location);
+                    std::cout << "Student at location " << location << ": " << *student << std::endl;
+                } catch (const std::out_of_range& e) {
+                    std::cout << e.what() << std::endl;
+                }
+                break;
+            }
+            case 8: {
+                studentList.Reset();
+                std::cout << "List reset" << std::endl;
+                break;
+            }
+            case 9: {
+                studentList.PrintList();
+                break;
+            }
+            case 10: {
+                return 0;
+            }
+            default: {
+                std::cout << "Invalid choice" << std::endl;
+                break;
+            }
+        }
     }
 
     return 0;
